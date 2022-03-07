@@ -43,7 +43,7 @@ const actions = {
             return response.status
         }
         if(response.status === 422) {
-            context.commit("SET_EXPENSES", response.data.message, {root: true})
+            context.commit("SET_ERRORS", response.data.message, {root: true})
             context.commit("SET_LOADING", false,  {root: true})
             return response.status
         }

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import can from '../helpers/can'
 import store from '../store'
 import Expense from '../views/Expense.vue'
 import Dashboard from '../views/Dashboard.vue'
@@ -6,7 +7,8 @@ import Login from '../views/Login.vue'
 import Category from '../views/Category.vue'
 import Role from '../views/Role.vue'
 import User from '../views/User.vue'
-
+import Account from '../views/Account.vue'
+import PageNotFound from '../views/PageNotFound.vue'
 const routes = [
   {
     path: '/login',
@@ -17,27 +19,39 @@ const routes = [
     }
   },
   {
+    path: '/404',
+    name: '404',
+    component: PageNotFound,
+    meta: {
+      guest: true
+    }
+  },
+  {
     path: '/dashboard',
     name: 'Dashboard',
     component: Dashboard,
     meta: {
-      auth: true
-    }
+      auth: true,
+      gate: ['view_dashboard']
+    },
+    
   },
   {
     path: '/expenses',
-    name: 'Expense',
+    name: 'Expenses',
     component: Expense,
     meta: {
-      auth: true
+      auth: true,
+      gate: ['view_category']
     }
   },
   {
     path: '/roles',
-    name: 'Role',
+    name: 'Roles',
     component: Role,
     meta: {
-      auth: true
+      auth: true,
+      gate: ['view_role']
     }
   },
   {
@@ -45,15 +59,26 @@ const routes = [
     name: 'Categories',
     component: Category,
     meta: {
-      auth: true
+      auth: true,
+      gate: ['view_category']
     }
   },
   {
     path: '/users',
-    name: 'User',
+    name: 'Users',
     component: User,
     meta: {
-      auth: true
+      auth: true,
+      gate: ['view_user']
+    }
+  },
+  {
+    path: '/account',
+    name: 'Account',
+    component: Account,
+    meta: {
+      auth: true,
+      gate: ['view_account']
     }
   },
 ]
@@ -72,6 +97,7 @@ router.beforeEach((to, from, next) => {
     }
   } else if(to.matched.some(record => record.meta.guest)) {
     if(store.getters.isLoggedIn) {
+      console.log(can(to.meta.gate))
       next({name: 'Dashboard'})
     } else {
       next()

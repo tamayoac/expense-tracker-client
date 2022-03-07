@@ -1,204 +1,264 @@
 <template>
-  <div class="w-full mb-8 overflow-hidden mt-16">
-  <div v-if="!loading" class="w-full">
-    <table class="w-full ">
-      <thead>
-        <tr class="text-md font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600">
-            <th v-if="checkRole('admin')" class="px-4 py-3 text-xs font-normal border">User</th>
-            <th class="px-4 py-3 text-xs font-normal border">Expense Category</th>
-            <th class="px-4 py-3 text-xs font-normal border">Amount</th>
-            <th class="px-4 py-3 text-xs font-normal border">Entry Date</th>
-            <th class="px-4 py-3 text-xs font-normal border">Created At</th>
-        </tr>
-      </thead>
-      <tbody v-for="expense in expenses" :key="expense.id" class="bg-white">
-        <tr @click="setAction(expense, 'update')" class="text-gray-700 hover:bg-blue-600 hover:text-white">
-           <td v-if="checkRole('admin')" class="px-4 py-3 border">
-            <div class="flex items-center text-sm">
-              <div>
-                <div class="text-md font-semibold">{{expense.user.name}}</div>
-              </div>
-            </div>
-          </td>
-          <td class="px-4 py-3 border">
-            <div class="flex items-center text-sm">
-              <div>
-                <div class="text-md font-semibold">{{expense.category.display_name}}</div>
-              </div>
-            </div>
-          </td>
-          <td class="px-4 py-3 border text-xs font-semibold">{{expense.amount}}</td>
-          <td class="px-4 py-3 border text-sm">{{expense.date}}</td>
-          <td class="px-4 py-3 border text-sm">{{expense.created_at}}</td>
-          </tr>
-        </tbody>
-      </table>
-      <div v-if="checkGate('create_expense')" class="flex justify-end mt-6">
-        <button class="px-2 py-2 border-black border rounded-sm hover:bg-blue-600 hover:border-0 hover:text-white " @click="setAction(null, 'create')">Add Expense</button>
-    </div>
-    </div>
-   <div v-else class="flex justify-center items-center">
-        <span class="text-lg text-gray-400">Loading...</span>
-    </div>
+  <custom-datatable
+    :items="expenses"
+    :loading="loading"
+    :columns="columns"
+    @getAction="setAction"
+  ></custom-datatable>
+  <div v-if="checkGate('create_expense')" class="flex justify-end mt-6">
+    <button
+      class="
+        px-2
+        py-2
+        border-black border
+        rounded-sm
+        hover:bg-blue-600 hover:border-0 hover:text-white
+      "
+      @click="setAction(null, 'create')"
+    >
+      Add Expense
+    </button>
   </div>
-    <Modal
-    v-model="isShow"
-    :close="closeModal"
-  >
-    <div class="bg-white">
-      <div class="border-b bg-white w-full px-4 py-3">
-        {{action}} Expenses
-      </div>
+
+  <custom-modal v-if="isShow" :title="title" :action="action">
+    <template #body>
       <form @submit.prevent="createExpenses">
         <div class="modal px-10 py-6">
-        <div class="flex flex-wrap items-center justify-between w-full my-2">
-          <label class="w-2/6 text-left">Category</label>
-          <div class="w-4/6">
-            <select class="border-black border px-2 py-1 w-full focus:outline-none rounded-sm" v-model="form.category">
-              <option v-for="category in categories" :key="category.id" :value="category.id">{{category.display_name}}</option>
-            </select>
-             <p v-if="errors.category" class="text-red-600 text-sm pt-1">The Category field is required</p>
-          </div>
-        </div>
-        <div class="flex flex-wrap items-center w-full my-2">
-          <label class="w-2/6 text-left">Amount</label>
+          <div class="flex flex-wrap items-center justify-between w-full my-2">
+            <label class="w-2/6 text-left">Category</label>
             <div class="w-4/6">
-              <input type="text" class="w-full px-2 py-1 border focus:outline-none border-black rounded-sm" v-model="form.amount"/>
-              <p v-if="errors.amount" class="text-red-600 text-sm pt-1">{{errors.description[0]}}</p>
+              <select
+                class="
+                  border-black border
+                  px-2
+                  py-1
+                  w-full
+                  focus:outline-none
+                  rounded-sm
+                "
+                v-model="form.category"
+              >
+                <option
+                  v-for="category in categories"
+                  :key="category.id"
+                  :value="category.id"
+                >
+                  {{ category.display_name }}
+                </option>
+              </select>
+              <p v-if="errors.category" class="text-red-600 text-sm pt-1">
+                The Category field is required
+              </p>
+            </div>
           </div>
-        </div>
-        <div class="flex flex-wrap items-center w-full my-2">
-          <label class="w-2/6 text-left">Entry Date</label>
+          <div class="flex flex-wrap items-center w-full my-2">
+            <label class="w-2/6 text-left">Amount</label>
             <div class="w-4/6">
-              <input type="date" class="w-full px-2 py-1 border focus:outline-none border-black rounded-sm" v-model="form.date"/>
-              <p v-if="errors.date" class="text-red-600 text-sm pt-1">{{errors.description[0]}}</p>
+              <input
+                type="text"
+                class="
+                  w-full
+                  px-2
+                  py-1
+                  border
+                  focus:outline-none
+                  border-black
+                  rounded-sm
+                "
+                v-model="form.amount"
+              />
+              <p v-if="errors.amount" class="text-red-600 text-sm pt-1">
+                {{ errors.amount[0] }}
+              </p>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center w-full my-2">
+            <label class="w-2/6 text-left">Entry Date</label>
+            <div class="w-4/6">
+              <input
+                type="date"
+                class="
+                  w-full
+                  px-2
+                  py-1
+                  border
+                  focus:outline-none
+                  border-black
+                  rounded-sm
+                "
+                v-model="form.date"
+              />
+              <p v-if="errors.date" class="text-red-600 text-sm pt-1">
+                {{ errors.date[0] }}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
       </form>
-        <div class="flex justify-between border-t bg-white w-full px-4 py-3">
-          <div>
-            <button v-if="action === 'Update'" @click="setAction(role,'delete')" class="text-sm mx-1 px-2 py-1 border-black border rounded-sm hover:bg-red-600 hover:border-0 hover:text-white w-16">Delete</button>
-          </div>
-          <div class="flex flex-row">
-            <button @click="closeModal" class="text-sm mx-1 px-2 py-1 border-black border rounded-sm hover:bg-gray-600 hover:border-0 hover:text-white w-16">
-              Cancel
-            </button>
-            <button type="submit" @click="submitFormHandler()" :class="action == 'Add' ? 'hover:bg-green-600' : 'hover:bg-blue-600'" class="text-sm mx-1 px-2 py-1 border-black border rounded-sm hover:border-0 hover:text-white w-16">
-              {{action}}
-            </button>
+    </template>
+    <template #footer>
+      <div class="flex justify-between border-t bg-white w-full px-4 py-3">
+        <div v-if="checkGate('delete_expense')">
+          <button
+            v-if="action === 'Update'"
+            @click="setAction(role, 'delete')"
+            class="
+              text-sm
+              mx-1
+              px-2
+              py-1
+              border-black border
+              rounded-sm
+              hover:bg-red-600 hover:border-0 hover:text-white
+              w-16
+            "
+          >
+            Delete
+          </button>
         </div>
-        
+        <div class="flex flex-row">
+          <button
+            @click="closeModal"
+            class="
+              text-sm
+              mx-1
+              px-2
+              py-1
+              border-black border
+              rounded-sm
+              hover:bg-gray-600 hover:border-0 hover:text-white
+              w-16
+            "
+          >
+            Cancel
+          </button>
+          <button
+            v-if="checkGate('create_expense')"
+            type="submit"
+            @click="submitFormHandler()"
+            :class="
+              action == 'Add' ? 'hover:bg-green-600' : 'hover:bg-blue-600'
+            "
+            class="
+              text-sm
+              mx-1
+              px-2
+              py-1
+              border-black border
+              rounded-sm
+              hover:border-0 hover:text-white
+              w-16
+            "
+          >
+            {{ action }}
+          </button>
+        </div>
       </div>
-    </div>
-  </Modal>
+    </template>
+  </custom-modal>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import modalMixin from '../mixins/modalMixin'
-import checkGate from '../mixins/gateMixin'
+import { mapGetters, mapActions } from "vuex";
+import modalMixin from "../mixins/modalMixin";
+import checkGate from "../mixins/gateMixin";
+import CustomDataTable from "../components/CustomDataTable.vue";
+import CustomModal from "../components/CustomModal.vue";
 export default {
-  name: 'ExpenseView',
-  data: function() {
+  name: "ExpenseView",
+  data: function () {
     return {
-      action: '',
+      action: "",
       form: {
-        id: '',
-        category: '',
+        id: "",
+        category: "",
         amount: 0.0,
-        date: '',
-      }
-    }
+        date: "",
+      },
+      columns: ["category", "amount", "date", "created_at"],
+    };
   },
   methods: {
-    createExpense () {
-      this.$store.dispatch("createExpense", this.form).then((status) => {
-          if(status === 201) {
-            this.closeModal()
-            this.$store.dispatch("getExpenses");
-          }
-      }).catch(err => {
-          console.log(err);
-      });
-    },
-    updateExpense() {
-      this.$store.dispatch("updateExpense", this.form).then((status) => {
-          if(status === 200) {
-            this.closeModal()
-            this.formClear()
-            this.$store.dispatch("getExpenses");
-          }
-      }).catch(err => {
-          console.log(err);
-      });
-    },
-    deleteExpense() {
-        this.$store.dispatch("deleteExpense", this.form.id).then((status) => {
-          if(status === 200) {
-            this.closeModal()
-            this.formClear()
-            this.$store.dispatch("getExpenses");
-          }
-      }).catch(err => {
-          console.log(err);
-      });
-    },
-    formClear(){
-        this.form.id = '',
-        this.form.category = ''
-        this.form.amount = '';
-        this.form.date = '';
-    },
-    checkRole(role) {
-      return this.userRole === role
+    ...mapActions({
+      createExpense: "createExpense",
+      updateExpense: "updateExpense",
+      deleteExpense: "deleteExpense",
+      getExpenses: "getExpenses",
+      getCategories: "getCategories",
+      getSelectCategory: "getSelectCategory",
+    }),
+    formClear() {
+      (this.form.id = ""), (this.form.category = "");
+      this.form.amount = "";
+      this.form.date = "";
     },
     submitFormHandler() {
-      if(this.action === 'Create') {
-        this.createExpense()
-      } if(this.action === "Update") {
-        this.updateExpense()
-      } if(this.action === "Delete") {
-        this.deleteExpense()
+      if (this.action === "Create") {
+        this.createExpense(this.form).then((status) => {
+          if (status === 201) {
+            this.closeModal();
+          }
+        });
       }
+      if (this.action === "Update") {
+        this.updateExpense(this.form).then((status) => {
+          if (status === 200) {
+            this.closeModal();
+            this.formClear();
+          }
+        });
+      }
+      if (this.action === "Delete") {
+        this.deleteExpense(this.form.id).then((status) => {
+          if (status === 200) {
+            this.closeModal();
+            this.formClear();
+          }
+        });
+      }
+      this.getExpenses();
     },
     setAction(expense, action) {
-      if(action === 'create') {
-        this.action = 'Create'
-        this.formClear()
-        this.showModal();
-      }if(action === 'update') {
-        this.action = "Update"
-        this.form.category = expense.category.id
-        this.form.amount = expense.amount
-        this.form.date = expense.date
+      if (action === "create") {
+        this.action = "Create";
+        this.formClear();
         this.showModal();
       }
-      if(action === 'delete') {
-        this.action = "Delete"
+      if (action === "update") {
+        if (this.checkGate("update_expense")) {
+          this.action = "Update";
+          this.form.id = expense.id;
+          this.form.category = expense.category.id;
+          this.form.amount = expense.amount;
+          this.form.date = expense.date;
+          this.showModal();
+        }
+      }
+      if (action === "delete") {
+        this.action = "Delete";
         this.submitFormHandler();
       }
-    
     },
   },
   components: {
-
+    "custom-datatable": CustomDataTable,
+    "custom-modal": CustomModal,
   },
   mounted() {
-      this.$store.dispatch("getCategories");
-      this.$store.dispatch("getExpenses");
+    this.getSelectCategory();
+    this.getExpenses();
   },
   computed: {
     ...mapGetters({
-      categories: 'categories',
-      loading: 'loading',
-      errors: 'errors',
-      userRole: 'userRole',
-      expenses: 'expenses'
-    })
+      categories: "categories",
+      loading: "loading",
+      errors: "errors",
+      userRole: "userRole",
+      expenses: "expenses",
+    }),
   },
   mixins: [modalMixin, checkGate],
-}
+};
 </script>
 <style scoped>
 .modal {

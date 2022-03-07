@@ -4,6 +4,8 @@ import user from './modules/user'
 import role from './modules/role'
 import category from './modules/category'
 import expenses from './modules/expenses'
+import permission from './modules/permission';
+import dashboard from './modules/dasbhboard'
 export default createStore({
   state: {
     errors: {},
@@ -31,6 +33,8 @@ export default createStore({
     user: user,
     role: role,
     category: category,
-    expenses: expenses
+    expenses: expenses,
+    permission: permission,
+    dashboard: dashboard
   }
 })

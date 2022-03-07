@@ -18,7 +18,6 @@ const actions = {
             },
             isAuthenticated: true,
         }).catch((err) => err)
-       
         if(response.status === 200) {
             context.commit("SET_USERS", response.data)
             context.commit("SET_LOADING", false, {root: true})

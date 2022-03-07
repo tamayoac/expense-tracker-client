@@ -10,6 +10,24 @@ const mutations = {
     },
 }
 const actions = {
+    async getSelectCategory(context) {
+        context.commit("SET_LOADING", true,  {root: true})
+        const response = await API.call({
+            config: {
+                url: "/select-categories",
+                method: "GET",
+            },
+            isAuthenticated: true,
+        }).catch((err) => err)
+        
+        if(response.status === 200) {
+            context.commit("SET_CATEGORIES", response.data)
+            context.commit("SET_LOADING", false,  {root: true})
+        } else {    
+            context.commit("SET_CATEGORIES", []);
+            context.commit("SET_LOADING", false,  {root: true})
+        }
+    },
     async getCategories(context) {
         context.commit("SET_LOADING", true,  {root: true})
         const response = await API.call({
