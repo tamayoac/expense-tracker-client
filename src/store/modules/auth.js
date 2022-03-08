@@ -5,7 +5,6 @@ const state = {
     role: '',
     auth: {
         access_token: localStorage.getItem('access_token') || null,
-        duration: localStorage.getItem('expiration') || 0,
     },
     userpermissions: [],
 };
@@ -16,9 +15,7 @@ const mutations = {
     },
     SET_AUTH(state, auth) {
         state.auth.access_token = auth.access_token
-        state.auth.duration = auth.expires_in
         localStorage.setItem('access_token', auth.access_token)
-        localStorage.setItem('expiration', auth.expires_in)
     },
     SET_USER_PERMISSIONS(state, userpermissions) {
         state.userpermissions = userpermissions
@@ -28,7 +25,6 @@ const mutations = {
     },
     CLEAR_USER_DATA () {
         localStorage.removeItem('access_token')
-        localStorage.removeItem('expiration')
         location.reload()
     },
     LOGIN_STATUS(state, isLoggedIn) {
@@ -47,14 +43,16 @@ const actions = {
             },
             isAuthenticated: false,
         }).catch((err) => err);
-        if(response.status === 200) {  
+        if(response.status === 200) {
+            let expirationTime = +response.data.data.expires_in * 1000;
+            setTimeout(() => {
+                context.commit('CLEAR_USER_DATA')
+            }, expirationTime);
             context.commit("SET_AUTH", response.data.data)
             context.commit("SET_LOADING", false,  {root: true})
             return true
         } else {
-            localStorage.removeItem('access_token')
-            localStorage.removeItem('expiration')
-            localStorage.removeItem('refresh_token')
+          
             context.commit("SET_ERRORS", response.data, {root: true})
             context.commit("SET_LOADING", false,  {root: true})
         }
