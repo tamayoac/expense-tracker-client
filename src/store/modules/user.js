@@ -9,19 +9,21 @@ const mutations = {
     },
 }
 const actions = {
-    async getUsers(context) {
+    async getUsers(context, page) {
         context.commit("SET_LOADING", true,  {root: true})
         const response = await API.call({
             config: {
-                url: "/users",
+                url: `/users?page=${page}`,
                 method: "GET",
             },
             isAuthenticated: true,
         }).catch((err) => err)
         if(response.status === 200) {
-            context.commit("SET_USERS", response.data)
+            context.commit("SET_USERS", response.data.data)
             context.commit("SET_LOADING", false, {root: true})
+            return response.data
         } else {    
+            context.commit("SET_ERRORS", response.data.message, {root: true})
             context.commit("SET_USERS", []);
             context.commit("SET_LOADING", false, {root: true})
         }
@@ -44,7 +46,7 @@ const actions = {
             context.commit("SET_ERRORS", response.data.message, {root: true})
             context.commit("SET_LOADING", false, {root: true})
             return response.status
-        }
+        } 
         else {    
             context.commit("SET_USERS", []);
         }

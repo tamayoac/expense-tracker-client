@@ -10,7 +10,7 @@
       "
       @click="setAction(null, 'create')"
     >
-      Add Expense
+      Add {{ title }}
     </button>
   </div>
   <custom-datatable
@@ -18,13 +18,11 @@
     :loading="loading"
     :columns="columns"
     @getAction="setAction"
-  ></custom-datatable>
-  <custom-pagination
     :totalPages="totalPages"
     :perPage="perPage"
     :currentPage="currentPage"
     @pagechanged="onPageChange"
-  ></custom-pagination>
+  ></custom-datatable>
 
   <custom-modal v-if="isShow" :title="title" :action="action">
     <template #body>
@@ -171,11 +169,12 @@ import modalMixin from "../mixins/modalMixin";
 import checkGate from "../mixins/gateMixin";
 import CustomDataTable from "../components/CustomDataTable.vue";
 import CustomModal from "../components/CustomModal.vue";
-import CustomPagination from "../components/CustomPagination.vue";
+
 export default {
   name: "ExpenseView",
   data: function () {
     return {
+      title: "Expense",
       action: "",
       currentPage: 1,
       totalPages: 1,
@@ -214,7 +213,6 @@ export default {
       });
     },
     onPageChange(page) {
-      console.log(page);
       this.fetchExpenses(page);
     },
     formClear() {
@@ -246,7 +244,7 @@ export default {
           }
         });
       }
-      this.getExpenses();
+      this.fetchExpenses(this.currentPage);
     },
     setAction(expense, action) {
       if (action === "create") {
@@ -273,7 +271,6 @@ export default {
   components: {
     "custom-datatable": CustomDataTable,
     "custom-modal": CustomModal,
-    "custom-pagination": CustomPagination,
   },
   mounted() {
     this.getSelectCategory();

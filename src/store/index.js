@@ -8,7 +8,7 @@ import permission from './modules/permission';
 import dashboard from './modules/dasbhboard'
 export default createStore({
   state: {
-    errors: {},
+    errors: [],
     loading: false
   },
   getters: {

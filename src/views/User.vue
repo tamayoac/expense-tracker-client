@@ -1,10 +1,4 @@
 <template>
-  <custom-datatable
-    :items="users"
-    :loading="loading"
-    :columns="columns"
-    @getAction="setAction"
-  ></custom-datatable>
   <div class="flex text-sm justify-end">
     <button
       class="
@@ -19,6 +13,17 @@
       Add {{ title }}
     </button>
   </div>
+  <custom-datatable
+    :items="users"
+    :loading="loading"
+    :columns="columns"
+    @getAction="setAction"
+    :totalPages="totalPages"
+    :perPage="perPage"
+    :currentPage="currentPage"
+    @pagechanged="onPageChange"
+  ></custom-datatable>
+
   <custom-modal v-if="isShow" :title="title" :action="action">
     <template #body>
       <form @submit.prevent="createUser">
@@ -165,6 +170,10 @@ export default {
     return {
       title: "User",
       action: "",
+      currentPage: 1,
+      totalPages: 1,
+      perPage: 1,
+      total: 1,
       form: {
         id: "",
         name: "",
@@ -214,6 +223,7 @@ export default {
           }
         });
       }
+      this.fetchUsers(this.currentPage);
     },
     formClear() {
       this.form.id = "";
@@ -221,7 +231,17 @@ export default {
       this.form.email = "";
       this.form.role = "";
     },
-
+    fetchUsers(page) {
+      this.getUsers(page).then((response) => {
+        this.totalPages = response.last_page;
+        this.currentPage = response.current_page;
+        this.perPage = response.per_page;
+        this.total = response.total;
+      });
+    },
+    onPageChange(page) {
+      this.fetchUsers(page);
+    },
     setAction(user, action) {
       if (action === "create") {
         this.action = "Create";
@@ -243,7 +263,7 @@ export default {
     },
   },
   mounted() {
-    this.getUsers();
+    this.fetchUsers(this.currentPage);
     this.getRoles();
   },
   computed: {

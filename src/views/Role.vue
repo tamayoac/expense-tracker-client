@@ -1,12 +1,4 @@
 <template>
-  <!-- Table -->
-  <custom-datatable
-    :items="roles"
-    :loading="loading"
-    :columns="columns"
-    @getAction="setAction"
-  ></custom-datatable>
-
   <!-- Add button -->
   <div v-if="checkGate('create_role')" class="flex text-sm justify-end">
     <button
@@ -22,6 +14,18 @@
       Add {{ title }}
     </button>
   </div>
+  <!-- Table -->
+  <custom-datatable
+    :items="roles"
+    :loading="loading"
+    :columns="columns"
+    @getAction="setAction"
+    :totalPages="totalPages"
+    :perPage="perPage"
+    :currentPage="currentPage"
+    @pagechanged="onPageChange"
+  ></custom-datatable>
+
   <!-- modal -->
   <custom-modal v-if="isShow" :title="title" :action="action">
     <template #body>
@@ -160,6 +164,10 @@ export default {
     return {
       title: "Role",
       action: "",
+      currentPage: 1,
+      totalPages: 1,
+      perPage: 1,
+      total: 1,
       form: {
         id: "",
         display_name: "",
@@ -211,6 +219,18 @@ export default {
           }
         });
       }
+      this.fetchRoles(this.currentPage);
+    },
+    fetchRoles(page) {
+      this.getRoles(page).then((response) => {
+        this.totalPages = response.last_page;
+        this.currentPage = response.current_page;
+        this.perPage = response.per_page;
+        this.total = response.total;
+      });
+    },
+    onPageChange(page) {
+      this.fetchRoles(page);
     },
     formClear() {
       this.form.id = "";
@@ -242,7 +262,7 @@ export default {
     },
   },
   mounted() {
-    this.getRoles();
+    this.getRoles(this.currentPage);
     this.getPermissions();
   },
   computed: {

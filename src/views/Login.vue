@@ -9,7 +9,7 @@
       <div class="font-thin text-3xl text-black">Welcome</div>
       <div class="text-lg text-black">Enter your credentials below</div>
       <form @submit.prevent="loginHandler">
-        <div class="text-red-500 text-sm w-full">Error</div>
+        <div class="text-red-500 text-sm w-full">{{ errors.message }}</div>
         <div class="flex flex-wrap pt-10">
           <div class="w-full bg-white rounded-sm border">
             <div class="text-black pt-3 px-3 text-sm font-bold">E-MAIL</div>
@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "LoginView",
   data: function () {
@@ -88,6 +88,11 @@ export default {
         password: "",
       },
     };
+  },
+  computed: {
+    ...mapGetters({
+      errors: "errors",
+    }),
   },
   methods: {
     loginHandler() {

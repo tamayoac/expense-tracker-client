@@ -28,19 +28,20 @@ const actions = {
             context.commit("SET_LOADING", false,  {root: true})
         }
     },
-    async getCategories(context) {
+    async getCategories(context, page) {
         context.commit("SET_LOADING", true,  {root: true})
         const response = await API.call({
             config: {
-                url: "/categories",
+                url: `/categories?page=${page}`,
                 method: "GET",
             },
             isAuthenticated: true,
         }).catch((err) => err)
         
         if(response.status === 200) {
-            context.commit("SET_CATEGORIES", response.data)
+            context.commit("SET_CATEGORIES", response.data.data)
             context.commit("SET_LOADING", false,  {root: true})
+            return response.data
         } else {    
             context.commit("SET_CATEGORIES", []);
             context.commit("SET_LOADING", false,  {root: true})

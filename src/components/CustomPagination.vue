@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center space-x-1">
+  <div class="flex items-center space-x-1 py-4">
     <button
       @click="onClickPreviousPage"
       :disabled="isInFirstPage"
@@ -141,9 +141,6 @@ export default {
     },
     pages() {
       const range = [];
-      console.log(
-        Math.min(this.startPage + this.maxVisibleButtons - 1, this.totalPages)
-      );
       for (
         let i = this.startPage;
         i <=

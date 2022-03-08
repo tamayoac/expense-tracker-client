@@ -55,7 +55,7 @@ const actions = {
             localStorage.removeItem('access_token')
             localStorage.removeItem('expiration')
             localStorage.removeItem('refresh_token')
-            context.commit("SET_ERROR", response.data)
+            context.commit("SET_ERRORS", response.data, {root: true})
             context.commit("SET_LOADING", false,  {root: true})
         }
     },

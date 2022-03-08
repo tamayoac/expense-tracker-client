@@ -1,11 +1,8 @@
 <template>
-  <custom-datatable
-    :items="categories"
-    :loading="loading"
-    :columns="columns"
-    @getAction="setAction"
-  ></custom-datatable>
-  <div v-if="checkGate('create_category')" class="flex justify-end mt-6">
+  <div
+    v-if="checkGate('create_category')"
+    class="flex justify-end mt-6 text-sm"
+  >
     <button
       class="
         px-2
@@ -16,9 +13,20 @@
       "
       @click="setAction(null, 'create')"
     >
-      Add Category
+      Add {{ title }}
     </button>
   </div>
+  <custom-datatable
+    :items="categories"
+    :loading="loading"
+    :columns="columns"
+    @getAction="setAction"
+    :totalPages="totalPages"
+    :perPage="perPage"
+    :currentPage="currentPage"
+    @pagechanged="onPageChange"
+  ></custom-datatable>
+
   <custom-modal v-if="isShow" :action="action" :title="title">
     <template #body>
       <form @submit.prevent="createCategory">
@@ -138,6 +146,11 @@ export default {
   name: "CategoryView",
   data: function () {
     return {
+      title: "Category",
+      currentPage: 1,
+      totalPages: 1,
+      perPage: 1,
+      total: 1,
       action: "",
       form: {
         id: "",
@@ -160,7 +173,7 @@ export default {
     }),
   },
   mounted() {
-    this.getCategories();
+    this.fetchCategories(this.currentPage);
   },
   methods: {
     ...mapActions({
@@ -193,7 +206,18 @@ export default {
           }
         });
       }
-      this.getCategories();
+      this.fetchCategories(this.currentPage);
+    },
+    fetchCategories(page) {
+      this.getCategories(page).then((response) => {
+        this.totalPages = response.last_page;
+        this.currentPage = response.current_page;
+        this.perPage = response.per_page;
+        this.total = response.total;
+      });
+    },
+    onPageChange(page) {
+      this.fetchCategories(page);
     },
     formClear() {
       this.form.id = "";
