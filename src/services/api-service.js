@@ -1,15 +1,13 @@
 import axios from 'axios';
-import api from '../services/api-variable'
 
 export const call = async ({config, isAuthenticated = true, isJSON = true}) => {
  
-  
   try { 
     const options = {
       headers: generateHeader(isAuthenticated, isJSON),
       method: config.method,
       data: config.data,
-      url: `${api.APP_EXPENSE.APP_EXPENSE_URL}${config.url}`,
+      url: process.env.VUE_APP_API_BASE_URL + config.url ,
   
     };
     

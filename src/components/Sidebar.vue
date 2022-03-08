@@ -1,5 +1,16 @@
 <template>
-  <div class="w-64 h-screen fixed pb-6 px-0 bg-blue-600">
+  <div
+    class="
+      w-64
+      h-screen
+      fixed
+      pb-6
+      px-0
+      bg-gradient-to-r
+      from-purple-500
+      to-blue-500
+    "
+  >
     <router-link to="/account">
       <div class="flex flex-wrap my-4">
         <div class="w-1/3">

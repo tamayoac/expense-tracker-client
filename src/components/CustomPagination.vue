@@ -56,7 +56,7 @@
         text-gray-500
         bg-gray-300
         rounded-md
-        hover:bg-blue-400 hover:text-white
+        hover:bg-blue-600 hover:text-white
       "
     >
       <svg
