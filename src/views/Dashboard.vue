@@ -54,15 +54,17 @@ export default {
     mapDashboardData() {
       let totalAmount = [];
       let color = [];
+      let categories = [];
       this.getDashboard().then((data) => {
         if (data) {
           data.forEach((item) => {
             totalAmount.push(item.total_amount);
             color.push(this.randomColorGenerator());
+            categories.push(item.category);
           });
         }
         this.chartData = {
-          label: [],
+          labels: categories,
           datasets: [
             {
               data: totalAmount,

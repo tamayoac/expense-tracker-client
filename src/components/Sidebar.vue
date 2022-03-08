@@ -1,20 +1,23 @@
 <template>
   <div class="w-64 h-screen fixed pb-6 px-0 bg-blue-600">
-    <div class="mt-4">
-      <router-link to="/account">
-        <div
-          class="w-10 h-10 bg-gray-400 rounded-full mx-6 hover:bg-gray-500"
-        ></div
-      ></router-link>
-      <div class="text-sm py-3 px-6 text-white">
-        <router-link to="/account"
-          >{{ userData.name }}
-          <span class="font-bold">({{ userRole }})</span></router-link
-        >
+    <router-link to="/account">
+      <div class="flex flex-wrap my-4">
+        <div class="w-1/3">
+          <div
+            class="w-10 h-10 bg-gray-400 rounded-full mx-6 hover:bg-gray-500"
+          ></div>
+        </div>
+        <div class="flex flex-wrap w-2/3 text-sm text-white">
+          <div class="w-full">
+            {{ userData.name }} <span class="font-bold">({{ userRole }})</span>
+          </div>
+
+          <div class="w-full">{{ userData.email }}</div>
+        </div>
       </div>
-    </div>
+    </router-link>
     <div>
-      <div v-for="nav in navs" :key="nav.title" class="pt-2">
+      <div v-for="nav in navs" :key="nav.title">
         <div
           v-if="checkGate(nav.gate)"
           @click="toggleChild"
@@ -26,13 +29,17 @@
               flex
               items-center
               px-6
-              py-2
+              py-3
               text-base
               font-normal
               text-gray-900
               dark:text-white
-              hover:bg-gray-100
-              dark:hover:bg-gray-700
+              hover:bg-blue-200 hover:bg-opacity-25
+            "
+            :class="
+              nav.title === this.$route.name
+                ? 'border-l-2 border-white bg-blue-200 bg-opacity-25 w-full text-white'
+                : ''
             "
             >{{ nav.title }}</router-link
           >
@@ -45,13 +52,17 @@
                   w-full
                   flex
                   items-center
-                  p-2
+                  p-3
                   text-base
                   font-normal
                   text-gray-900
                   dark:text-white
-                  hover:bg-gray-100
-                  dark:hover:bg-gray-700
+                  hover:bg-blue-200 hover:bg-opacity-25
+                "
+                :class="
+                  children.title === this.$route.name
+                    ? 'border-l-2 border-white bg-blue-200 bg-opacity-25 w-full text-white'
+                    : ''
                 "
                 >{{ children.title }}</router-link
               >
@@ -144,5 +155,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-</style>

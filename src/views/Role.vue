@@ -78,6 +78,9 @@
                 :searchable="true"
                 mode="tags"
               ></multiselect>
+              <p v-if="errors.permissions" class="text-red-600 text-sm pt-1">
+                {{ errors.permissions[0] }}
+              </p>
             </div>
           </div>
         </div>

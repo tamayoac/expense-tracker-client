@@ -10,19 +10,21 @@ const mutations = {
     },
 }
 const actions = {
-    async getExpenses(context) {
+    async getExpenses(context, page) {
+       
         context.commit("SET_LOADING", true,  {root: true})
         const response = await API.call({
             config: {
-                url: "/expenses",
+                url: `/expenses?page=${page}`,
                 method: "GET",
             },
             isAuthenticated: true,
         }).catch((err) => err)
         
         if(response.status === 200) {
-            context.commit("SET_EXPENSES", response.data)
+            context.commit("SET_EXPENSES", response.data.data)
             context.commit("SET_LOADING", false,  {root: true})
+            return response.data
         } else {    
             context.commit("SET_EXPENSES", []);
             context.commit("SET_LOADING", false,  {root: true})

@@ -7,7 +7,6 @@
           <input
             type="password"
             class="py-2 px-3 border rounded focus:outline-none w-full"
-            placeholder="New Password"
             v-model="form.current_password"
           />
           <p v-if="errors.current_password" class="text-red-600 text-sm pt-1">
@@ -21,7 +20,6 @@
           <input
             type="password"
             class="py-2 px-3 border rounded focus:outline-none w-full"
-            placeholder="New Password"
             v-model="form.new_password"
           />
           <p v-if="errors.new_password" class="text-red-600 text-sm pt-1">
@@ -35,7 +33,6 @@
           <input
             type="password"
             class="py-2 px-3 border rounded focus:outline-none w-full"
-            placeholder="New Password"
             v-model="form.new_confirm_password"
           />
           <p

@@ -1,24 +1,30 @@
 <template>
-  <custom-datatable
-    :items="expenses"
-    :loading="loading"
-    :columns="columns"
-    @getAction="setAction"
-  ></custom-datatable>
-  <div v-if="checkGate('create_expense')" class="flex justify-end mt-6">
+  <div v-if="checkGate('create_expense')" class="flex justify-end">
     <button
       class="
         px-2
         py-2
         border-black border
         rounded-sm
-        hover:bg-blue-600 hover:border-0 hover:text-white
+        hover:bg-blue-600 hover:border-blue-600 hover:text-white
       "
       @click="setAction(null, 'create')"
     >
       Add Expense
     </button>
   </div>
+  <custom-datatable
+    :items="expenses"
+    :loading="loading"
+    :columns="columns"
+    @getAction="setAction"
+  ></custom-datatable>
+  <custom-pagination
+    :totalPages="totalPages"
+    :perPage="perPage"
+    :currentPage="currentPage"
+    @pagechanged="onPageChange"
+  ></custom-pagination>
 
   <custom-modal v-if="isShow" :title="title" :action="action">
     <template #body>
@@ -55,6 +61,7 @@
             <label class="w-2/6 text-left">Amount</label>
             <div class="w-4/6">
               <input
+                @keypress="validateNumber"
                 type="text"
                 class="
                   w-full
@@ -164,11 +171,16 @@ import modalMixin from "../mixins/modalMixin";
 import checkGate from "../mixins/gateMixin";
 import CustomDataTable from "../components/CustomDataTable.vue";
 import CustomModal from "../components/CustomModal.vue";
+import CustomPagination from "../components/CustomPagination.vue";
 export default {
   name: "ExpenseView",
   data: function () {
     return {
       action: "",
+      currentPage: 1,
+      totalPages: 1,
+      perPage: 1,
+      total: 1,
       form: {
         id: "",
         category: "",
@@ -179,6 +191,12 @@ export default {
     };
   },
   methods: {
+    validateNumber(event) {
+      let keyCode = event.keyCode ? event.keyCode : event.which;
+      if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) {
+        event.preventDefault();
+      }
+    },
     ...mapActions({
       createExpense: "createExpense",
       updateExpense: "updateExpense",
@@ -187,6 +205,18 @@ export default {
       getCategories: "getCategories",
       getSelectCategory: "getSelectCategory",
     }),
+    fetchExpenses(page) {
+      this.getExpenses(page).then((response) => {
+        this.totalPages = response.last_page;
+        this.currentPage = response.current_page;
+        this.perPage = response.per_page;
+        this.total = response.total;
+      });
+    },
+    onPageChange(page) {
+      console.log(page);
+      this.fetchExpenses(page);
+    },
     formClear() {
       (this.form.id = ""), (this.form.category = "");
       this.form.amount = "";
@@ -243,10 +273,11 @@ export default {
   components: {
     "custom-datatable": CustomDataTable,
     "custom-modal": CustomModal,
+    "custom-pagination": CustomPagination,
   },
   mounted() {
     this.getSelectCategory();
-    this.getExpenses();
+    this.fetchExpenses(this.currentPage);
   },
   computed: {
     ...mapGetters({

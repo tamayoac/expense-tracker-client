@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full mb-8 overflow-hidden mt-16">
+  <div class="w-full mb-8 overflow-hidden mt-4">
     <div v-if="!loading" class="w-full">
       <table class="w-full">
         <thead>
