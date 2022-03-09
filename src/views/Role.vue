@@ -1,6 +1,6 @@
 <template>
   <!-- Add button -->
-  <div v-if="checkGate('create_role')" class="flex text-sm justify-end">
+  <div v-if="$can('create_role')" class="flex text-sm justify-end">
     <button
       class="
         px-2
@@ -76,12 +76,12 @@
           <div class="flex flex-wrap items-center w-full my-2">
             <label class="w-2/6 text-left" for="">Permissions</label>
             <div class="w-4/6">
-              <multiselect
+              <multi-select
                 v-model="form.permissions"
                 :options="permissions"
                 :searchable="true"
                 mode="tags"
-              ></multiselect>
+              ></multi-select>
               <p v-if="errors.permissions" class="text-red-600 text-sm pt-1">
                 {{ errors.permissions[0] }}
               </p>
@@ -94,7 +94,7 @@
       <div class="flex justify-between border-t bg-white w-full px-4 py-3">
         <div>
           <button
-            v-if="action === 'Update' && checkGate('delete_role')"
+            v-if="action === 'Update' && $can('delete_role')"
             @click="setAction(role, 'delete')"
             class="
               text-sm
@@ -127,7 +127,7 @@
             Cancel
           </button>
           <button
-            v-if="checkGate('create_role')"
+            v-if="$can('create_role')"
             type="submit"
             @click="submitFormHandler()"
             :class="
@@ -157,7 +157,6 @@ import { mapGetters, mapActions } from "vuex";
 import modalMixin from "../mixins/modalMixin";
 import CustomDataTable from "../components/CustomDataTable.vue";
 import CustomModal from "../components/CustomModal.vue";
-import checkGate from "../mixins/gateMixin";
 export default {
   name: "RoleView",
   data: function () {
@@ -181,7 +180,7 @@ export default {
     "custom-datatable": CustomDataTable,
     "custom-modal": CustomModal,
   },
-  mixins: [modalMixin, checkGate],
+  mixins: [modalMixin],
   methods: {
     ...mapActions({
       createRole: "createRole",
@@ -246,7 +245,7 @@ export default {
         this.showModal();
       }
       if (action === "update") {
-        if (this.checkGate("update_role")) {
+        if (this.$can("update_role")) {
           this.action = "Update";
           this.form.id = item.id;
           this.form.display_name = item.display_name;

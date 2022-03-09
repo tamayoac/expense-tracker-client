@@ -89,20 +89,19 @@ export default {
   computed: {
     ...mapGetters({
       errors: "errors",
+      userpermissions: "userpermissions",
     }),
   },
   methods: {
     loginHandler() {
       this.login(this.form).then((response) => {
         if (response) {
-          this.getMe();
           this.$router.push({ name: "Dashboard" });
         }
       });
     },
     ...mapActions({
       login: "login",
-      getMe: "getMe",
     }),
   },
 };

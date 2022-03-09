@@ -8,14 +8,18 @@ import VueUniversalModal from 'vue-universal-modal'
 import Multiselect from '@vueform/multiselect'
 import '@vueform/multiselect/themes/default.css'
 import { Chart, registerables } from "chart.js";
+import can from './helpers/can'
+
 
 Chart.register(...registerables)
 
-createApp(App)
-.use(store)
-.use(router)
-.use(VueUniversalModal, {
+const app = createApp(App)
+app.use(store)
+app.use(router)
+app.use(VueUniversalModal, {
     teleportTarget: '#modals',
 })
-.component('multiselect', Multiselect)
-.mount('#app')
+app.config.globalProperties.$can = can;
+app.component('multi-select', Multiselect)
+app.mount('#app')
+

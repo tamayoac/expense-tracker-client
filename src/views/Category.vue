@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-if="checkGate('create_category')"
-    class="flex justify-end mt-6 text-sm"
-  >
+  <div v-if="$can('create_category')" class="flex justify-end mt-6 text-sm">
     <button
       class="
         px-2
@@ -141,7 +138,6 @@ import { mapGetters, mapActions } from "vuex";
 import CustomDataTable from "../components/CustomDataTable.vue";
 import CustomModal from "../components/CustomModal.vue";
 import modalMixin from "../mixins/modalMixin";
-import checkGate from "../mixins/gateMixin";
 export default {
   name: "CategoryView",
   data: function () {
@@ -164,7 +160,7 @@ export default {
     "custom-datatable": CustomDataTable,
     "custom-modal": CustomModal,
   },
-  mixins: [modalMixin, checkGate],
+  mixins: [modalMixin],
   computed: {
     ...mapGetters({
       categories: "categories",
@@ -232,7 +228,7 @@ export default {
         this.showModal();
       }
       if (action === "update") {
-        if (this.checkGate("update_category")) {
+        if (this.$can("update_category")) {
           this.action = "Update";
           this.form.id = item.id;
           this.form.display_name = item.display_name;

@@ -1,6 +1,7 @@
 <template>
   <div class="flex text-sm justify-end">
     <button
+      v-if="$can('create_user')"
       class="
         px-2
         py-2
@@ -100,7 +101,7 @@
       <div class="flex justify-between border-t bg-white w-full px-4 py-3">
         <div>
           <button
-            v-if="action === 'Update' && checkGate('delete_user')"
+            v-if="action === 'Update' && $can('delete_user')"
             @click="setAction(user, 'delete')"
             class="
               text-sm
@@ -133,7 +134,7 @@
             Cancel
           </button>
           <button
-            v-if="checkGate('create_user')"
+            v-if="$can('create_user')"
             type="submit"
             @click="submitFormHandler()"
             :class="
@@ -163,7 +164,6 @@ import { mapGetters, mapActions } from "vuex";
 import modalMixin from "../mixins/modalMixin";
 import CustomDataTable from "../components/CustomDataTable.vue";
 import CustomModal from "../components/CustomModal.vue";
-import checkGate from "../mixins/gateMixin";
 export default {
   name: "UserView",
   data: function () {
@@ -187,7 +187,7 @@ export default {
     "custom-datatable": CustomDataTable,
     "custom-modal": CustomModal,
   },
-  mixins: [modalMixin, checkGate],
+  mixins: [modalMixin],
   methods: {
     ...mapActions({
       createUser: "createUser",

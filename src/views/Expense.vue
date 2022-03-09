@@ -1,5 +1,5 @@
 <template>
-  <div v-if="checkGate('create_expense')" class="flex justify-end">
+  <div v-if="$can('create_expense')" class="flex justify-end">
     <button
       class="
         px-2
@@ -103,7 +103,7 @@
     </template>
     <template #footer>
       <div class="flex justify-between border-t bg-white w-full px-4 py-3">
-        <div v-if="checkGate('delete_expense')">
+        <div v-if="$can('delete_expense')">
           <button
             v-if="action === 'Update'"
             @click="setAction(role, 'delete')"
@@ -138,7 +138,7 @@
             Cancel
           </button>
           <button
-            v-if="checkGate('create_expense')"
+            v-if="$can('create_expense')"
             type="submit"
             @click="submitFormHandler()"
             :class="
@@ -166,7 +166,6 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import modalMixin from "../mixins/modalMixin";
-import checkGate from "../mixins/gateMixin";
 import CustomDataTable from "../components/CustomDataTable.vue";
 import CustomModal from "../components/CustomModal.vue";
 
@@ -253,7 +252,7 @@ export default {
         this.showModal();
       }
       if (action === "update") {
-        if (this.checkGate("update_expense")) {
+        if (this.$can("update_expense")) {
           this.action = "Update";
           this.form.id = expense.id;
           this.form.category = expense.category.id;
@@ -285,7 +284,7 @@ export default {
       expenses: "expenses",
     }),
   },
-  mixins: [modalMixin, checkGate],
+  mixins: [modalMixin],
 };
 </script>
 <style scoped>

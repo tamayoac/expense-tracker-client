@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import can from '../helpers/can'
 import store from '../store'
 import Expense from '../views/Expense.vue'
 import Dashboard from '../views/Dashboard.vue'
@@ -10,6 +9,13 @@ import User from '../views/User.vue'
 import Account from '../views/Account.vue'
 import PageNotFound from '../views/PageNotFound.vue'
 const routes = [
+  {
+    path: '/',
+    redirect: '/login',
+    meta: {
+        guest: true
+    }
+  },
   {
     path: '/login',
     name: 'Login',
@@ -32,7 +38,7 @@ const routes = [
     component: Dashboard,
     meta: {
       auth: true,
-      gate: ['view_dashboard']
+      gate: 'view_dashboard'
     },
     
   },
@@ -42,7 +48,7 @@ const routes = [
     component: Expense,
     meta: {
       auth: true,
-      gate: ['view_category']
+      gate: 'view_category'
     }
   },
   {
@@ -51,7 +57,7 @@ const routes = [
     component: Role,
     meta: {
       auth: true,
-      gate: ['view_role']
+      gate: 'view_role'
     }
   },
   {
@@ -60,7 +66,7 @@ const routes = [
     component: Category,
     meta: {
       auth: true,
-      gate: ['view_category']
+      gate: 'view_category'
     }
   },
   {
@@ -69,7 +75,7 @@ const routes = [
     component: User,
     meta: {
       auth: true,
-      gate: ['view_user']
+      gate: 'view_user'
     }
   },
   {
@@ -78,7 +84,7 @@ const routes = [
     component: Account,
     meta: {
       auth: true,
-      gate: ['view_account']
+      gate: 'view_account'
     }
   },
 ]
@@ -97,7 +103,6 @@ router.beforeEach((to, from, next) => {
     }
   } else if(to.matched.some(record => record.meta.guest)) {
     if(store.getters.isLoggedIn) {
-      console.log(can(to.meta.gate))
       next({name: 'Dashboard'})
     } else {
       next()

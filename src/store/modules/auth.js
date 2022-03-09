@@ -7,6 +7,7 @@ const state = {
         access_token: localStorage.getItem('access_token') || null,
     },
     userpermissions: [],
+
 };
 
 const mutations = {
@@ -26,9 +27,6 @@ const mutations = {
     CLEAR_USER_DATA () {
         localStorage.removeItem('access_token')
         location.reload()
-    },
-    LOGIN_STATUS(state, isLoggedIn) {
-        state.loading = isLoggedIn;
     },
 };
 

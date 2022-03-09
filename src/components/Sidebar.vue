@@ -30,7 +30,7 @@
     <div>
       <div v-for="nav in navs" :key="nav.title">
         <div
-          v-if="checkGate(nav.gate)"
+          v-if="$can(nav.gate)"
           @click="toggleChild"
           class="flex justify-center flex-col"
         >
@@ -55,7 +55,7 @@
             >{{ nav.title }}</router-link
           >
           <div v-for="children in nav.children" :key="children.title">
-            <div v-if="checkGate(children.gate)" class="text-white font-normal">
+            <div v-if="$can(children.gate)" class="text-white font-normal">
               <router-link
                 :to="children.link"
                 class="
@@ -86,7 +86,6 @@
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
-import checkGate from "../mixins/gateMixin";
 export default {
   name: "NavbarComponent",
   data: function () {
@@ -146,7 +145,6 @@ export default {
       getMe: "getMe",
     }),
   },
-  mixins: [checkGate],
   mounted() {
     this.getMe();
   },
