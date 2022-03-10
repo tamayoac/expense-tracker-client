@@ -67,6 +67,10 @@ const actions = {
         if(response.status === 200) {
             context.commit("SET_LOADING", false,  {root: true})
             context.commit('CLEAR_USER_DATA')
+            return true
+        } else {
+            context.commit("SET_LOADING", false,  {root: true})
+            context.commit('CLEAR_USER_DATA')
         }
     },
     async getMe(context) {

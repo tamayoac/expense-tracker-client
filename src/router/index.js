@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import store from '../store'
 import Expense from '../views/Expense.vue'
 import Dashboard from '../views/Dashboard.vue'
 import Login from '../views/Login.vue'
@@ -8,14 +7,9 @@ import Role from '../views/Role.vue'
 import User from '../views/User.vue'
 import Account from '../views/Account.vue'
 import PageNotFound from '../views/PageNotFound.vue'
+import Middleware from '../middlewares/index.js'
 const routes = [
-  {
-    path: '/',
-    redirect: '/login',
-    meta: {
-        guest: true
-    }
-  },
+ 
   {
     path: '/login',
     name: 'Login',
@@ -25,30 +19,23 @@ const routes = [
     }
   },
   {
-    path: '/404',
-    name: '404',
-    component: PageNotFound,
-    meta: {
-      guest: true
-    }
-  },
-  {
     path: '/dashboard',
     name: 'Dashboard',
     component: Dashboard,
     meta: {
-      auth: true,
-      gate: 'view_dashboard'
-    },
-    
+      middleware: [Middleware.auth, Middleware.permission],
+      permission: 'view_dashboard',
+      auth: true
+    }
   },
   {
     path: '/expenses',
     name: 'Expenses',
     component: Expense,
     meta: {
-      auth: true,
-      gate: 'view_category'
+      middleware: [Middleware.auth, Middleware.permission],
+      permission: 'view_expense',
+      auth: true
     }
   },
   {
@@ -56,8 +43,9 @@ const routes = [
     name: 'Roles',
     component: Role,
     meta: {
-      auth: true,
-      gate: 'view_role'
+      middleware: [Middleware.auth, Middleware.permission],
+      permission: 'view_role',
+      auth: true
     }
   },
   {
@@ -65,8 +53,9 @@ const routes = [
     name: 'Categories',
     component: Category,
     meta: {
-      auth: true,
-      gate: 'view_category'
+      middleware: [Middleware.auth, Middleware.permission],
+      permission: 'view_category',
+      auth: true
     }
   },
   {
@@ -74,8 +63,9 @@ const routes = [
     name: 'Users',
     component: User,
     meta: {
-      auth: true,
-      gate: 'view_user'
+      middleware: [Middleware.auth, Middleware.permission],
+      permission: 'view_user',
+      auth: true
     }
   },
   {
@@ -83,10 +73,21 @@ const routes = [
     name: 'Account',
     component: Account,
     meta: {
-      auth: true,
-      gate: 'view_account'
+      middleware: [Middleware.auth, Middleware.permission],
+      permission: 'view_account',
+      auth: true
     }
   },
+  // {
+  //   path: '/',
+  //   redirect: '/login',
+  // },
+  {
+    path: '/404',
+    name: 'NotFound',
+    component: PageNotFound, 
+  },
+ 
 ]
 
 const router = createRouter({
@@ -94,22 +95,39 @@ const router = createRouter({
   routes
 })
 
+function nextFactory(context, middleware, index) {
+  const subsequentMiddleware = middleware[index];
+  // If no subsequent Middleware exists,
+  // the default `next()` callback is returned.
+  if (!subsequentMiddleware) return context.next;
+
+  return (...parameters) => {
+    // Run the default Vue Router `next()` callback first.
+    context.next(...parameters);
+    // Then run the subsequent Middleware with a new
+    // `nextMiddleware()` callback.
+    const nextMiddleware = nextFactory(context, middleware, index + 1);
+    subsequentMiddleware({ ...context, next: nextMiddleware });
+  };
+}
+
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.auth)) {
-    if(!store.getters.isLoggedIn) {
-      next({name: 'Login'})
-    } else {
-      next()
-    }
-  } else if(to.matched.some(record => record.meta.guest)) {
-    if(store.getters.isLoggedIn) {
-      next({name: 'Dashboard'})
-    } else {
-      next()
-    }
-  } else {
-    next()
+  if(to.meta.middleware) {
+    const middleware = Array.isArray(to.meta.middleware)
+        ? to.meta.middleware
+        : [to.meta.middleware];
+    
+    const context = {
+      from,
+      next,
+      router,
+      to
+    };
+    const nextMiddleware = nextFactory(context, middleware, 1);
+
+    return middleware[0]({...context, next: nextMiddleware});
   }
+  return next();
 })
 
 export default router

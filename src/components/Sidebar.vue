@@ -150,8 +150,10 @@ export default {
   },
   watch: {
     $route: {
-      handler() {
-        this.getMe();
+      handler(from) {
+        if (from.name != "Login") {
+          this.getMe();
+        }
       },
     },
   },
@@ -160,6 +162,7 @@ export default {
       userpermissions: "userpermissions",
       userData: "userData",
       userRole: "userRole",
+      isLoggedIn: "isLoggedIn",
     }),
   },
 };

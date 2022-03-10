@@ -29,7 +29,11 @@ export default {
       logout: "logout",
     }),
     handlerLogout() {
-      this.logout();
+      this.logout().then((response) => {
+        if (response) {
+          this.$router.push({ name: "Login" });
+        }
+      });
     },
   },
 };

@@ -89,14 +89,16 @@ export default {
   computed: {
     ...mapGetters({
       errors: "errors",
-      userpermissions: "userpermissions",
     }),
   },
   methods: {
     loginHandler() {
       this.login(this.form).then((response) => {
         if (response) {
-          this.$router.push({ name: "Dashboard" });
+          if (this.$can("view_dashboard")) {
+            this.$router.push({ name: "Dashboard" });
+          }
+          this.$router.push({ name: "Roles" });
         }
       });
     },
@@ -106,6 +108,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-</style>
