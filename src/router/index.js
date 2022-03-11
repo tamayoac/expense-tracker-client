@@ -8,6 +8,7 @@ import User from '../views/User.vue'
 import Account from '../views/Account.vue'
 import PageNotFound from '../views/PageNotFound.vue'
 import Middleware from '../middlewares/index.js'
+import store from '../store'
 const routes = [
  
   {
@@ -15,7 +16,7 @@ const routes = [
     name: 'Login',
     component: Login,
     meta: {
-      guest: true
+      middleware: [Middleware.Guest]
     }
   },
   {
@@ -23,7 +24,7 @@ const routes = [
     name: 'Dashboard',
     component: Dashboard,
     meta: {
-      middleware: [Middleware.auth, Middleware.permission],
+      middleware: [Middleware.Auth, Middleware.Permission],
       permission: 'view_dashboard',
       auth: true
     }
@@ -33,9 +34,8 @@ const routes = [
     name: 'Expenses',
     component: Expense,
     meta: {
-      middleware: [Middleware.auth, Middleware.permission],
+      middleware: [Middleware.Auth, Middleware.Permission],
       permission: 'view_expense',
-      auth: true
     }
   },
   {
@@ -43,9 +43,8 @@ const routes = [
     name: 'Roles',
     component: Role,
     meta: {
-      middleware: [Middleware.auth, Middleware.permission],
+      middleware: [Middleware.Auth, Middleware.Permission],
       permission: 'view_role',
-      auth: true
     }
   },
   {
@@ -53,9 +52,8 @@ const routes = [
     name: 'Categories',
     component: Category,
     meta: {
-      middleware: [Middleware.auth, Middleware.permission],
+      middleware: [Middleware.Auth, Middleware.Permission],
       permission: 'view_category',
-      auth: true
     }
   },
   {
@@ -63,9 +61,8 @@ const routes = [
     name: 'Users',
     component: User,
     meta: {
-      middleware: [Middleware.auth, Middleware.permission],
+      middleware: [Middleware.Auth, Middleware.Permission],
       permission: 'view_user',
-      auth: true
     }
   },
   {
@@ -73,19 +70,21 @@ const routes = [
     name: 'Account',
     component: Account,
     meta: {
-      middleware: [Middleware.auth, Middleware.permission],
+      middleware: [Middleware.Auth],
       permission: 'view_account',
-      auth: true
     }
   },
-  // {
-  //   path: '/',
-  //   redirect: '/login',
-  // },
+  {
+    path: '/',
+    redirect: '/login',
+  },
   {
     path: '/404',
     name: 'NotFound',
     component: PageNotFound, 
+    meta: {
+      middleware: [Middleware.Auth, Middleware.Permission],
+    }
   },
  
 ]
@@ -121,7 +120,8 @@ router.beforeEach((to, from, next) => {
       from,
       next,
       router,
-      to
+      to,
+      store
     };
     const nextMiddleware = nextFactory(context, middleware, 1);
 

@@ -1,22 +1,13 @@
-import store from '../store'
 import can from '../helpers/can'
-export default function permission({ from, to, next, router }) {
+export default function permission({ from, to, store, router, next}) {
+ 
   const permission = to.meta.permission;
-  if(!from.name) {
-   store.dispatch('getMe').then(() => {
-      if(!can(permission)) {
-        return router.push({name: 'NotFound'})
+  if(from.name === undefined) {
+      store.dispatch('getMe').then(() => {
+      if(can(permission)) {
+        return next()
       } 
-      return next()
-   })
-  
-  } else {
-    store.dispatch('getMe').then(() => {
-      if(!can(permission)) {
-        return router.push({name: 'NotFound'})
-      } 
-      return next()
+      return router.push({name: 'NotFound'})
     })
   }
-    
 }

@@ -1,7 +1,9 @@
-import auth from './auth'
-import permission from './permission'
+import Auth from './auth'
+import Permission from './permission'
+import Guest from './guest'
 
 export default {
-    auth,
-    permission,
+    Auth,
+    Permission,
+    Guest
 }

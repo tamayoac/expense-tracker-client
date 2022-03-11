@@ -95,10 +95,7 @@ export default {
     loginHandler() {
       this.login(this.form).then((response) => {
         if (response) {
-          if (this.$can("view_dashboard")) {
-            this.$router.push({ name: "Dashboard" });
-          }
-          this.$router.push({ name: "Roles" });
+          this.$router.push({ name: "Dashboard" });
         }
       });
     },
