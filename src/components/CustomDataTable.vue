@@ -1,6 +1,6 @@
 <template>
   <div class="w-full mb-8 overflow-hidden mt-4">
-    <div v-if="!items.length === 0 || items">
+    <div v-if="items.length > 0">
       <div v-if="!loading" class="w-full">
         <table class="w-full">
           <thead>
@@ -56,7 +56,9 @@
         <span class="text-lg text-gray-400">Loading...</span>
       </div>
     </div>
-    <div v-else>No Data Available</div>
+    <div v-else class="flex items-center justify-center">
+      <h1 class="text-xl font-bold text-gray-400 pt-32">No Data Available</h1>
+    </div>
   </div>
 </template>
 

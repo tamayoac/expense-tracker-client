@@ -3,7 +3,10 @@
     <div class="text-md">My Expenses</div>
     <div class="text-md">Dashboard</div>
   </div>
-  <div class="flex mx-auto max-w-4xl pt-20">
+  <div
+    v-if="dashboard_expenses.length > 0"
+    class="flex mx-auto max-w-4xl pt-20"
+  >
     <div class="flex justify-center items-center w-1/2">
       <table class="table-fixed">
         <thead>
@@ -23,6 +26,9 @@
     <div class="w-1/2">
       <doughnut-chart :chartData="chartData"></doughnut-chart>
     </div>
+  </div>
+  <div v-else class="flex items-center justify-center">
+    <h1 class="text-xl font-bold text-gray-400 pt-32">No Data Available</h1>
   </div>
 </template>
 <script>
