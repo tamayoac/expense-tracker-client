@@ -2,49 +2,62 @@
   <div class="w-full mb-8 overflow-hidden mt-4">
     <div v-if="items.length > 0">
       <div v-if="!loading" class="w-full">
-        <table class="w-full">
-          <thead>
-            <tr
+        <div class="w-full">
+          <div>
+            <div
               class="
-                text-md
-                font-semibold
-                tracking-wide
-                text-left text-gray-900
-                bg-gray-100
+                flex
+                justify-between
                 uppercase
-                border-b border-gray-600
+                focus:outline-none
+                border
+                rounded-md
+                space-x-5
+                bg-gradient-to-r
+                from-blue-500
+                to-purple-500
+                text-white
               "
             >
-              <th
+              <div
                 v-for="(column, index) in columns"
                 :key="index"
-                class="px-4 py-3 text-xs font-normal border"
+                class="w-full px-3 py-4 text-sm"
               >
                 {{ column }}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
+              </div>
+            </div>
+          </div>
+          <div class="">
+            <div
               v-for="(item, index) in items"
               :key="index"
-              class="text-gray-700 hover:bg-blue-600 hover:text-white"
+              class="
+                flex
+                justify-between
+                w-full
+                border
+                rounded-md
+                my-2
+                space-x-5
+                hover:bg-gray-200 hover:border-gray-200
+              "
               @click="setAction(item, 'update')"
             >
-              <td
+              <div
                 v-for="(column, indexColumn) in columns"
                 :key="indexColumn"
-                class="px-4 py-3 border text-sm"
+                class="w-full py-3 px-4 text-md"
               >
                 {{
                   typeof item[column] != "object"
                     ? item[column]
                     : item[column][column]
                 }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </div>
+            </div>
+          </div>
+        </div>
         <custom-pagination
           :totalPages="totalPages"
           :perPage="perPage"

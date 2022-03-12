@@ -1,29 +1,21 @@
 <template>
-  <div v-if="$can('create_expense')" class="flex justify-end">
-    <button
-      class="
-        px-2
-        py-2
-        border-black border
-        rounded-sm
-        hover:bg-blue-600 hover:border-blue-600 hover:text-white
-      "
-      @click="setAction(null, 'create')"
-    >
-      Add {{ title }}
-    </button>
+  <div class="max-w-6xl mx-auto">
+    <div v-if="$can('create_expense')" class="flex justify-end">
+      <button class="primary-btn" @click="setAction(null, 'create')">
+        Add {{ title }}
+      </button>
+    </div>
+    <custom-datatable
+      :items="expenses"
+      :loading="loading"
+      :columns="columns"
+      @getAction="setAction"
+      :totalPages="totalPages"
+      :perPage="perPage"
+      :currentPage="currentPage"
+      @pagechanged="onPageChange"
+    ></custom-datatable>
   </div>
-  <custom-datatable
-    :items="expenses"
-    :loading="loading"
-    :columns="columns"
-    @getAction="setAction"
-    :totalPages="totalPages"
-    :perPage="perPage"
-    :currentPage="currentPage"
-    @pagechanged="onPageChange"
-  ></custom-datatable>
-
   <custom-modal v-if="isShow" :title="title" :action="action">
     <template #body>
       <form @submit.prevent="createExpenses">

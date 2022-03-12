@@ -1,31 +1,23 @@
 <template>
   <!-- Add button -->
-  <div v-if="$can('create_role')" class="flex text-sm justify-end">
-    <button
-      class="
-        px-2
-        py-2
-        border-black border
-        rounded-sm
-        hover:bg-blue-600 hover:border-0 hover:text-white
-      "
-      @click="setAction(null, 'create')"
-    >
-      Add {{ title }}
-    </button>
+  <div class="max-w-6xl mx-auto">
+    <div v-if="$can('create_role')" class="flex text-sm justify-end">
+      <button class="primary-btn" @click="setAction(null, 'create')">
+        Add {{ title }}
+      </button>
+    </div>
+    <!-- Table -->
+    <custom-datatable
+      :items="roles"
+      :loading="loading"
+      :columns="columns"
+      @getAction="setAction"
+      :totalPages="totalPages"
+      :perPage="perPage"
+      :currentPage="currentPage"
+      @pagechanged="onPageChange"
+    ></custom-datatable>
   </div>
-  <!-- Table -->
-  <custom-datatable
-    :items="roles"
-    :loading="loading"
-    :columns="columns"
-    @getAction="setAction"
-    :totalPages="totalPages"
-    :perPage="perPage"
-    :currentPage="currentPage"
-    @pagechanged="onPageChange"
-  ></custom-datatable>
-
   <!-- modal -->
   <custom-modal v-if="isShow" :title="title" :action="action">
     <template #body>

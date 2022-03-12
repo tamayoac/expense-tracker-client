@@ -69,6 +69,7 @@ export default {
             categories.push(item.category);
           });
         }
+
         this.chartData = {
           labels: categories,
           datasets: [

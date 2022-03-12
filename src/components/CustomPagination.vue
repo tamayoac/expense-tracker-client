@@ -3,16 +3,7 @@
     <button
       @click="onClickPreviousPage"
       :disabled="isInFirstPage"
-      class="
-        flex
-        items-center
-        px-4
-        py-2
-        text-gray-500
-        bg-gray-300
-        rounded-md
-        hover:bg-blue-600 hover:text-white
-      "
+      class="primary-btn"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -34,30 +25,19 @@
       :key="page.name"
       :disabled="page.isDisabled"
       :class="
-        isPageActive(page.name) ? 'bg-blue-600 text-white' : 'bg-gray-200'
+        isPageActive(page.name)
+          ? 'bg-blue-600 text-white'
+          : 'bg-gray-300 text-white'
       "
       @click="onClickPage(page.name)"
-      class="
-        px-4
-        py-2
-        text-gray-700
-        rounded-md
-        hover:bg-blue-600 hover:text-white
-      "
+      class="px-4 py-2 rounded-md hover:bg-blue-600 hover:text-white"
     >
       {{ page.name }}
     </button>
     <button
       @click="onClickNextPage"
       :disabled="isInLastPage"
-      class="
-        px-4
-        py-2
-        text-gray-500
-        bg-gray-300
-        rounded-md
-        hover:bg-blue-600 hover:text-white
-      "
+      class="primary-btn"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

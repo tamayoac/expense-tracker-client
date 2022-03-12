@@ -43,20 +43,9 @@
           </p>
         </div>
       </div>
-
-      <button
-        class="
-          mt-4
-          float-right
-          px-2
-          py-2
-          border-black border
-          rounded-sm
-          hover:bg-blue-600 hover:border-0 hover:text-white
-        "
-      >
-        Change Password
-      </button>
+      <div class="mt-4 float-right">
+        <button class="primary-btn">Change Password</button>
+      </div>
     </form>
   </div>
 </template>
