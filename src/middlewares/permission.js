@@ -7,7 +7,6 @@ export default function permission({ from, to, store, router, next}) {
       if(can(permission)) {
         return next()
       } 
-      console.log(from)
       return router.push({name: 'NotFound'})
     })
   }

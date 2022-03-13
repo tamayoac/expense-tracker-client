@@ -1,22 +1,21 @@
 <template>
   <!-- Add button -->
-  <div class="max-w-6xl mx-auto">
+  <div class="container-lg">
     <div v-if="$can('create_role')" class="flex text-sm justify-end">
       <button class="primary-btn" @click="setAction(null, 'create')">
         Add {{ title }}
       </button>
     </div>
-    <!-- Table -->
-    <custom-datatable
+    <role-datatable
       :items="roles"
+      :permissions="permissions"
       :loading="loading"
-      :columns="columns"
       @getAction="setAction"
       :totalPages="totalPages"
       :perPage="perPage"
       :currentPage="currentPage"
       @pagechanged="onPageChange"
-    ></custom-datatable>
+    ></role-datatable>
   </div>
   <!-- modal -->
   <custom-modal v-if="isShow" :title="title" :action="action">
@@ -28,15 +27,7 @@
             <div class="w-4/6">
               <input
                 type="text"
-                class="
-                  w-full
-                  px-2
-                  py-1
-                  border
-                  focus:outline-none
-                  border-black
-                  rounded-sm
-                "
+                class="form-control"
                 v-model="form.display_name"
               />
               <p v-if="errors.display_name" class="text-red-600 text-sm pt-1">
@@ -49,15 +40,7 @@
             <div class="w-4/6">
               <input
                 type="email"
-                class="
-                  w-full
-                  px-2
-                  py-1
-                  border
-                  focus:outline-none
-                  border-black
-                  rounded-sm
-                "
+                class="form-control"
                 v-model="form.description"
               />
               <p v-if="errors.description" class="text-red-600 text-sm pt-1">
@@ -88,36 +71,13 @@
           <button
             v-if="action === 'Update' && $can('delete_role')"
             @click="setAction(role, 'delete')"
-            class="
-              text-sm
-              mx-1
-              px-2
-              py-1
-              border-black border
-              rounded-sm
-              hover:bg-red-600 hover:border-0 hover:text-white
-              w-16
-            "
+            class="danger-btn ml-3"
           >
             Delete
           </button>
         </div>
         <div class="flex flex-row">
-          <button
-            @click="closeModal"
-            class="
-              text-sm
-              mx-1
-              px-2
-              py-1
-              border-black border
-              rounded-sm
-              hover:bg-gray-600 hover:border-0 hover:text-white
-              w-16
-            "
-          >
-            Cancel
-          </button>
+          <button @click="closeModal" class="default-btn mr-3">Cancel</button>
           <button
             v-if="$can('create_role')"
             type="submit"
@@ -125,16 +85,7 @@
             :class="
               action == 'Add' ? 'hover:bg-green-600' : 'hover:bg-blue-600'
             "
-            class="
-              text-sm
-              mx-1
-              px-2
-              py-1
-              border-black border
-              rounded-sm
-              hover:border-0 hover:text-white
-              w-16
-            "
+            class="primary-btn mr-3"
           >
             {{ action }}
           </button>
@@ -147,7 +98,7 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import modalMixin from "../mixins/modalMixin";
-import CustomDataTable from "../components/CustomDataTable.vue";
+import RoleDataTable from "../components/RoleDataTable.vue";
 import CustomModal from "../components/CustomModal.vue";
 export default {
   name: "RoleView",
@@ -165,11 +116,10 @@ export default {
         description: "",
         permissions: [],
       },
-      columns: ["display_name", "description", "created_at"],
     };
   },
   components: {
-    "custom-datatable": CustomDataTable,
+    "role-datatable": RoleDataTable,
     "custom-modal": CustomModal,
   },
   mixins: [modalMixin],
@@ -187,7 +137,6 @@ export default {
         this.createRole(this.form).then((status) => {
           if (status === 201) {
             this.closeModal();
-            this.getRoles();
           }
         });
       }
@@ -196,7 +145,6 @@ export default {
           if (status === 200) {
             this.closeModal();
             this.formClear();
-            this.getRoles();
             this.getMe();
           }
         });
@@ -206,7 +154,6 @@ export default {
           if (status === 200) {
             this.closeModal();
             this.formClear();
-            this.getRoles();
           }
         });
       }

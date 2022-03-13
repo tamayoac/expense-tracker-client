@@ -29,13 +29,10 @@
     </router-link>
     <div>
       <div v-for="nav in navs" :key="nav.title">
-        <div
-          v-if="$can(nav.gate)"
-          @click="toggleChild"
-          class="flex justify-center flex-col"
-        >
-          <router-link
-            :to="nav.link"
+        <div class="flex justify-center flex-col">
+          <button
+            v-if="$can(nav.gate)"
+            @click="toggleNav(nav)"
             class="
               flex
               items-center
@@ -52,12 +49,14 @@
                 ? 'border-l-2 border-white bg-blue-200 bg-opacity-25 w-full text-white'
                 : ''
             "
-            >{{ nav.title }}</router-link
           >
-          <div v-for="children in nav.children" :key="children.title">
-            <div v-if="$can(children.gate)" class="text-white font-normal">
-              <router-link
-                :to="children.link"
+            {{ nav.title }}
+          </button>
+          <div v-if="toggle">
+            <div v-for="children in nav.children" :key="children.title">
+              <button
+                v-if="$can(children.gate)"
+                @click="toggleNav(children)"
                 class="
                   pl-16
                   w-full
@@ -65,18 +64,19 @@
                   items-center
                   p-3
                   text-base
-                  font-normal
-                  text-gray-900
                   dark:text-white
                   hover:bg-blue-200 hover:bg-opacity-25
+                  text-white
+                  font-normal
                 "
                 :class="
                   children.title === this.$route.name
                     ? 'border-l-2 border-white bg-blue-200 bg-opacity-25 w-full text-white'
                     : ''
                 "
-                >{{ children.title }}</router-link
               >
+                {{ children.title }}
+              </button>
             </div>
           </div>
         </div>
@@ -90,6 +90,7 @@ export default {
   name: "NavbarComponent",
   data: function () {
     return {
+      toggle: true,
       navs: [
         {
           link: "/dashboard",
@@ -144,6 +145,13 @@ export default {
     ...mapActions({
       getMe: "getMe",
     }),
+    toggleNav(nav) {
+      if (!Array.isArray(nav.children)) {
+        this.$router.push({ path: nav.link });
+      } else {
+        this.toggle = !this.toggle;
+      }
+    },
   },
   mounted() {
     this.getMe();

@@ -39,6 +39,7 @@ const actions = {
         }).catch((err) => err)
         
         if(response.status === 200) {
+          
             context.commit("SET_CATEGORIES", response.data.data)
             context.commit("SET_LOADING", false,  {root: true})
             return response.data

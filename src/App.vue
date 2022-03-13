@@ -3,7 +3,7 @@
     <sidebar></sidebar>
     <div class="w-screen ml-64">
       <navbar></navbar>
-      <div class="m-4">
+      <div class="">
         <router-view />
       </div>
     </div>

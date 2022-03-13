@@ -1,34 +1,39 @@
 <template>
-  <div class="flex justify-between w-full px-10 py-4 font-bold text-gray-400">
-    <div class="text-md">My Expenses</div>
-    <div class="text-md">Dashboard</div>
-  </div>
-  <div
-    v-if="dashboard_expenses.length > 0"
-    class="flex mx-auto max-w-4xl pt-20"
-  >
-    <div class="flex justify-center items-center w-1/2">
-      <table class="table-fixed">
-        <thead>
-          <tr>
-            <th class="text-md font-normal px-4 py-2">Expense Category</th>
-            <th class="text-md font-normal px-4 py-2">Total</th>
-          </tr>
-        </thead>
-        <tbody v-for="expenses in dashboard_expenses" :key="expenses.category">
-          <tr>
-            <td class="text-sm px-4 py-2">{{ expenses.category }}</td>
-            <td class="text-sm px-4 py-2">₱ {{ expenses.total_amount }}</td>
-          </tr>
-        </tbody>
-      </table>
+  <div class="bg-white">
+    <div class="flex justify-between w-full px-10 py-4 font-bold text-gray-400">
+      <div class="text-md">My Expenses</div>
+      <div class="text-md">Dashboard</div>
     </div>
-    <div class="w-1/2">
-      <doughnut-chart :chartData="chartData"></doughnut-chart>
+    <div
+      v-if="dashboard_expenses.length > 0"
+      class="flex mx-auto max-w-4xl pt-20"
+    >
+      <div class="flex justify-center items-center w-1/2">
+        <table class="table-fixed">
+          <thead>
+            <tr>
+              <th class="text-md font-normal px-4 py-2">Expense Category</th>
+              <th class="text-md font-normal px-4 py-2">Total</th>
+            </tr>
+          </thead>
+          <tbody
+            v-for="expenses in dashboard_expenses"
+            :key="expenses.category"
+          >
+            <tr>
+              <td class="text-sm px-4 py-2">{{ expenses.category }}</td>
+              <td class="text-sm px-4 py-2">₱ {{ expenses.total_amount }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="w-1/2">
+        <doughnut-chart :chartData="chartData"></doughnut-chart>
+      </div>
     </div>
-  </div>
-  <div v-else class="flex items-center justify-center">
-    <h1 class="text-xl font-bold text-gray-400 pt-32">No Data Available</h1>
+    <div v-else class="flex items-center justify-center">
+      <h1 class="text-xl font-bold text-gray-400 pt-32">No Data Available</h1>
+    </div>
   </div>
 </template>
 <script>

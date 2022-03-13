@@ -10,6 +10,25 @@ const mutations = {
     },
 }
 const actions = {
+    async getSelectRoles(context) {
+        context.commit("SET_LOADING", true,  {root: true})
+        const response = await API.call({
+            config: {
+                url: "/select-roles",
+                method: "GET",
+            },
+            isAuthenticated: true,
+        }).catch((err) => err)
+        
+        if(response.status === 200) {
+          
+            context.commit("SET_ROLES", response.data)
+            context.commit("SET_LOADING", false,  {root: true})
+        } else {    
+            context.commit("SET_ROLES", []);
+            context.commit("SET_LOADING", false,  {root: true})
+        }
+    },
     async getRoles(context, page) {
         context.commit("SET_LOADING", true,  {root: true})
         const response = await API.call({
@@ -21,6 +40,7 @@ const actions = {
         }).catch((err) => err)
         
         if(response.status === 200) {
+            
             context.commit("SET_ROLES", response.data.data)
             context.commit("SET_LOADING", false,  {root: true})
             return response.data

@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-6xl mx-auto">
+  <div class="container-lg">
     <div v-if="$can('create_user')" class="flex text-sm justify-end">
       <button class="primary-btn" @click="setAction(null, 'create')">
         Add {{ title }}
@@ -23,19 +23,7 @@
           <div class="flex flex-wrap items-center w-full my-2">
             <label class="w-2/6 text-left">Name</label>
             <div class="w-4/6">
-              <input
-                type="text"
-                class="
-                  w-full
-                  px-2
-                  py-1
-                  border
-                  focus:outline-none
-                  border-black
-                  rounded-sm
-                "
-                v-model="form.name"
-              />
+              <input type="text" class="form-control" v-model="form.name" />
               <p v-if="errors.name" class="text-red-600 text-sm pt-1">
                 {{ errors.name[0] }}
               </p>
@@ -44,19 +32,7 @@
           <div class="flex flex-wrap items-center w-full my-2">
             <label class="w-2/6 text-left">Email Address</label>
             <div class="w-4/6">
-              <input
-                type="email"
-                class="
-                  w-full
-                  px-2
-                  py-1
-                  border
-                  focus:outline-none
-                  border-black
-                  rounded-sm
-                "
-                v-model="form.email"
-              />
+              <input type="email" class="form-control" v-model="form.email" />
               <p v-if="errors.email" class="text-red-600 text-sm pt-1">
                 {{ errors.email[0] }}
               </p>
@@ -65,17 +41,7 @@
           <div class="flex flex-wrap items-center justify-between w-full my-2">
             <label class="w-2/6 text-left">Role</label>
             <div class="w-4/6">
-              <select
-                class="
-                  border-black border
-                  px-2
-                  py-1
-                  w-full
-                  focus:outline-none
-                  rounded-sm
-                "
-                v-model="form.role"
-              >
+              <select class="form-control" v-model="form.role">
                 <option v-for="role in roles" :key="role.id" :value="role.id">
                   {{ role.display_name }}
                 </option>
@@ -89,41 +55,18 @@
       </form>
     </template>
     <template #footer>
-      <div class="flex justify-between border-t bg-white w-full px-4 py-3">
+      <div class="flex justify-between border-t bg-white w-full px-5 py-3">
         <div>
           <button
             v-if="action === 'Update' && $can('delete_user')"
             @click="setAction(user, 'delete')"
-            class="
-              text-sm
-              mx-1
-              px-2
-              py-1
-              border-black border
-              rounded-sm
-              hover:bg-red-600 hover:border-0 hover:text-white
-              w-16
-            "
+            class="danger-btn ml-3"
           >
             Delete
           </button>
         </div>
         <div class="flex flex-row">
-          <button
-            @click="closeModal"
-            class="
-              text-sm
-              mx-1
-              px-2
-              py-1
-              border-black border
-              rounded-sm
-              hover:bg-gray-600 hover:border-0 hover:text-white
-              w-16
-            "
-          >
-            Cancel
-          </button>
+          <button @click="closeModal" class="default-btn mr-3">Cancel</button>
           <button
             v-if="$can('create_user')"
             type="submit"
@@ -131,16 +74,7 @@
             :class="
               action == 'Add' ? 'hover:bg-green-600' : 'hover:bg-blue-600'
             "
-            class="
-              text-sm
-              mx-1
-              px-2
-              py-1
-              border-black border
-              rounded-sm
-              hover:border-0 hover:text-white
-              w-16
-            "
+            class="primary-btn mr-3"
           >
             {{ action }}
           </button>
@@ -185,7 +119,7 @@ export default {
       updateUser: "updateUser",
       deleteUser: "deleteUser",
       getUsers: "getUsers",
-      getRoles: "getRoles",
+      getSelectRoles: "getSelectRoles",
     }),
     submitFormHandler() {
       if (this.action === "Create") {
@@ -255,7 +189,7 @@ export default {
   },
   mounted() {
     this.fetchUsers(this.currentPage);
-    this.getRoles();
+    this.getSelectRoles();
   },
   computed: {
     ...mapGetters({

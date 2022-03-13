@@ -5,43 +5,33 @@
         <div class="w-full">
           <div>
             <div class="table-header">
-              <div
-                v-for="(column, index) in columns"
-                :key="index"
-                class="w-full px-3 py-4 text-sm"
-              >
-                {{ column }}
-              </div>
+              <div class="w-full px-3 py-4 text-sm">Role</div>
+              <div class="w-full px-3 py-4 text-sm">Description</div>
+              <div class="w-full px-3 py-4 text-sm">Created At</div>
             </div>
           </div>
-          <div class="">
-            <div
-              v-for="(item, index) in items"
-              :key="index"
-              class="
-                flex
-                justify-between
-                w-full
-                border
-                rounded-md
-                my-2
-                space-x-5
-                hover:bg-gray-200 hover:border-gray-200
-              "
-              @click="setAction(item, 'update')"
-            >
-              <div
-                v-for="(column, indexColumn) in columns"
-                :key="indexColumn"
-                class="w-full py-3 px-4 text-md"
-              >
-                {{
-                  typeof item[column] != "object"
-                    ? item[column]
-                    : item[column][column]
-                }}
-              </div>
+
+          <div
+            v-for="(item, index) in items"
+            :key="index"
+            class="
+              flex
+              justify-between
+              w-full
+              border
+              rounded-md
+              my-2
+              space-x-5
+              hover:bg-gray-200 hover:border-gray-200
+            "
+            @click="setAction(item, 'update')"
+          >
+            <div class="w-full py-3 px-4 text-md">
+              {{ item.display_name }}
             </div>
+            <div class="w-full py-3 px-4 text-md">{{ item.description }}</div>
+
+            <div class="w-full py-3 px-4 text-md">{{ item.created_at }}</div>
           </div>
         </div>
         <custom-pagination
@@ -69,12 +59,12 @@ export default {
       type: Array,
       required: true,
     },
-    loading: {
-      type: Boolean,
+    permissions: {
+      type: Object,
       required: true,
     },
-    columns: {
-      type: Array,
+    loading: {
+      type: Boolean,
       required: true,
     },
     totalPages: {
@@ -103,3 +93,6 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+</style>

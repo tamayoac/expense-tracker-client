@@ -8,7 +8,9 @@
   text-gray-500
   bg-gray-300
   rounded-md
-  hover:bg-blue-600 hover:text-white;
+  hover:bg-blue-600 hover:text-white
+  uppercase
+  text-sm;
 }
 .danger-btn {
   @apply px-4
@@ -16,5 +18,42 @@
   text-gray-500
   bg-gray-300
   rounded-md
-  hover:bg-red-600 hover:text-white;
+  hover:bg-red-600 hover:text-white
+  uppercase
+  text-sm;
+}
+.default-btn {
+  @apply px-4
+  py-2
+  text-gray-500
+  bg-gray-300
+  rounded-md
+  hover:bg-gray-600 hover:text-white
+  uppercase
+  text-sm;
+}
+.container-lg {
+  @apply max-w-6xl mx-auto bg-white px-6 py-6 my-4 rounded shadow-md border;
+}
+.container-md {
+  @apply max-w-3xl mx-auto bg-white px-6 py-6 my-4 rounded shadow-md border;
+}
+.form-control {
+  @apply border focus:outline-none px-2 py-2 bg-white rounded text-sm shadow w-full ease-linear transition-all duration-150;
+}
+.form-label {
+  @apply text-xs uppercase font-bold text-gray-400 mb-2;
+}
+.table-header {
+  @apply flex
+  justify-between
+  uppercase
+  focus:outline-none
+  border
+  rounded-md
+  space-x-5
+  bg-gradient-to-r
+  from-blue-500
+  to-purple-500
+  text-white;
 }

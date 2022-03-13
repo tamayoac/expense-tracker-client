@@ -1,6 +1,6 @@
 <template>
-  <div class="max-w-6xl mx-auto">
-    <div v-if="$can('create_expense')" class="flex justify-end">
+  <div class="container-lg">
+    <div v-if="$can('create_expense')" class="flex text-sm justify-end">
       <button class="primary-btn" @click="setAction(null, 'create')">
         Add {{ title }}
       </button>

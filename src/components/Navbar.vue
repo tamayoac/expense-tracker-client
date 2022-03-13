@@ -11,7 +11,7 @@
       text-sm
     "
   >
-    <div class="text-gray-400">{{ $route.name }}</div>
+    <div class="text-gray-400 uppercase">{{ $route.name }}</div>
     <div class="flex items-center">
       <div class="pr-8 text-gray-400">Welcome to Expense Manager</div>
       <button @click="handlerLogout" class="danger-btn">Logout</button>
